@@ -62,7 +62,7 @@
 
       // If no error, proceed (Android flow)
       const { access_token, refresh_token } = data.session;
-      const deepLinkUrl = `${appDeepLink}?access_token=${encodeURIComponent(access_token)}&refresh_token=${encodeURIComponent(refresh_token)}`;
+      const deepLinkUrl = `${appDeepLink}?refresh_token=${encodeURIComponent(refresh_token)}`;
 
       window.location.href = deepLinkUrl;
 
