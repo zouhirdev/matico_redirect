@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login Redirect</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f9fafb;
+      color: #111;
+    }
+    .box {
+      text-align: center;
+    }
+    .spinner {
+      border: 4px solid #eee;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 16px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="spinner"></div>
+    <p>Logging you in…</p>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js";
+
+    // 👇 Replace with your self-hosted values
+    const supabaseUrl = "https://supabase.rezemate.com";
+    const supabaseAnonKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc1OTI1Mjk4MCwiZXhwIjo0OTE0OTI2NTgwLCJyb2xlIjoiYW5vbiJ9.2MQamfKYk3O_Q5kDOPWlutMhFLQbE2LYupgxJQDtOCY";
+    const appDeepLink = "Matico://login";
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    async function handleLoginRedirect() {
+      const url = window.location.href;
+
+      // 1. Exchange code for session
+      const { data, error } = await supabase.auth.exchangeCodeForSession(url);
+      if (error) {
+        console.error("Auth error:", error);
+        document.querySelector(".box p").textContent = "Login failed. Please try again.";
+        return;
+      }
+
+      const { access_token, refresh_token } = data.session;
+
+      // 2. Try deep-linking into the app
+      const deepLinkUrl = `${appDeepLink}?access_token=${encodeURIComponent(access_token)}&refresh_token=${encodeURIComponent(refresh_token)}`;
+
+      // Open deep link
+      window.location.href = deepLinkUrl;
+
+      // 3. As a fallback (browser only), stay signed in here
+      // This allows desktop/iOS web users to continue in the browser.
+    }
+
+    handleLoginRedirect();
+  </script>
+</body>
+</html>
