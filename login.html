@@ -47,7 +47,7 @@
 
       if (error) {
         console.error("Auth error:", error);
-        document.getElementById("status").textContent = "Login failed. Please try again.";
+        document.getElementById("status").textContent = "Login failed: " + (error.message || "Unknown error");
         return;
       }
 
