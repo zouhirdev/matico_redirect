@@ -46,16 +46,27 @@
       const { data, error } = await supabase.auth.exchangeCodeForSession(url);
 
       if (error) {
-        console.error("Auth error:", error);
-        document.getElementById("status").textContent = "Login failed: " + (error.message || "Unknown error");
+        console.warn("Auth error:", error);
+
+        // If the code_verifier is missing, it's probably a browser (not the app).
+        if (error.message.includes("code verifier")) {
+          document.getElementById("status").textContent = "Your email was confirmed successfully!";
+          document.querySelector(".spinner").style.display = "none";
+          return;
+        }
+
+        document.getElementById("status").textContent = "Login failed. Please try again.";
+        document.querySelector(".spinner").style.display = "none";
         return;
       }
 
+      // If no error, proceed (Android flow)
       const { access_token, refresh_token } = data.session;
       const deepLinkUrl = `${appDeepLink}?access_token=${encodeURIComponent(access_token)}&refresh_token=${encodeURIComponent(refresh_token)}`;
 
-      // Try opening the app
       window.location.href = deepLinkUrl;
+
+
 
       // Fallback after 1.5s: assume no app opened, show web success
       setTimeout(() => {
