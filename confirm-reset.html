@@ -6,21 +6,87 @@
   <style>
     body { font-family: system-ui, sans-serif; display: grid; place-content: center; text-align: center; height: 100vh; margin: 0; background: #0D1B2A; color: #eee; }
     .card { background: #182430; padding: 2rem 3rem; border-radius: 12px; }
-    a { display: inline-block; padding: 0.8rem 1.5rem; background: #00F5A0; color: #0D1B2A; text-decoration: none; font-weight: bold; border-radius: 8px; margin-top: 1rem; }
+    #message { min-height: 1.5rem; }
+    
+    /* The real button that the user will see and click */
+    #real-button { 
+      display: inline-block; 
+      padding: 0.8rem 1.5rem; 
+      background: #00F5A0; 
+      color: #0D1B2A; 
+      text-decoration: none; 
+      font-weight: bold; 
+      border-radius: 8px; 
+      margin-top: 1rem;
+      cursor: pointer;
+      border: none;
+    }
+    
+    /* Initially disable the button */
+    #real-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* The trap button for bots. It's in the DOM but not visible on screen. */
+    #trap-button {
+      position: absolute;
+      left: -9999px; /* Move it far off-screen */
+      top: -9999px;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Confirm Your Action</h1>
-    <p>Please click the button below to proceed to the password reset page.</p>
-    <a href="#" id="confirm-link">Reset Password</a>
+    <p id="message">Please wait a moment...</p>
+
+    <!-- This is the button the user will click -->
+    <button id="real-button" disabled>Reset Password</button>
+
+    <!-- This is the honeypot button for the bot -->
+    <a href="#" id="trap-button"></a>
   </div>
 
   <script>
-    const confirmLink = document.getElementById('confirm-link');
+    const realButton = document.getElementById('real-button');
+    const trapButton = document.getElementById('trap-button');
+    const message = document.getElementById('message');
+
+    // Get the password reset token from the URL fragment (#)
     const tokenFragment = window.location.hash;
-    // Make sure this points to your ACTUAL reset page
-    confirmLink.href = `https://matico.rezemate.com/reset.html${tokenFragment}`;
+    
+    // Construct the final destination URL
+    const destinationUrl = `https://matico.rezemate.com/reset.html${tokenFragment}`;
+
+    let botDetected = false;
+
+    // STEP 1: Set up the trap. If the invisible button is "clicked", it's a bot.
+    trapButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('Bot detected! Disabling real button permanently.');
+      botDetected = true;
+      // Permanently disable the real button and show an error.
+      realButton.disabled = true;
+      message.textContent = 'Error: Link was invalidated by a security scanner. Please request a new link.';
+    });
+    
+    // STEP 2: Wait for 1.5 seconds. This is enough time for a bot to spring the trap,
+    // but short enough that a human won't get impatient.
+    setTimeout(() => {
+      // If the bot trap has NOT been sprung, enable the button for the real user.
+      if (!botDetected) {
+        console.log('Timer finished, no bot detected. Enabling button for user.');
+        message.textContent = 'Please click the button below to proceed.';
+        realButton.disabled = false;
+        
+        // When the user clicks the real button, go to the destination.
+        realButton.addEventListener('click', () => {
+          window.location.href = destinationUrl;
+        });
+      }
+    }, 1500); // 1.5 second delay
+
   </script>
 </body>
 </html>
