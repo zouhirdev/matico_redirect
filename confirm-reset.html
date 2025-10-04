@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirm Password Reset</title>
+  <style>
+    body { font-family: system-ui, sans-serif; display: grid; place-content: center; text-align: center; height: 100vh; margin: 0; background: #0D1B2A; color: #eee; }
+    .card { background: #182430; padding: 2rem 3rem; border-radius: 12px; }
+    a { display: inline-block; padding: 0.8rem 1.5rem; background: #00F5A0; color: #0D1B2A; text-decoration: none; font-weight: bold; border-radius: 8px; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Confirm Your Action</h1>
+    <p>Please click the button below to proceed to the password reset page.</p>
+    <a href="#" id="confirm-link">Reset Password</a>
+  </div>
+
+  <script>
+    const confirmLink = document.getElementById('confirm-link');
+    const tokenFragment = window.location.hash;
+    // Make sure this points to your ACTUAL reset page
+    confirmLink.href = `https://matico.rezemate.com/reset.html${tokenFragment}`;
+  </script>
+</body>
+</html>
