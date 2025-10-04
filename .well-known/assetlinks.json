@@ -2,7 +2,7 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "com.zouhirdev.stad",
+    "package_name": "com.rezemate.Matico",
     "sha256_cert_fingerprints":
     ["37:11:A6:F6:EF:AD:6B:3B:E4:5B:60:F0:A2:1D:14:B9:D1:BD:CA:AD:A7:49:F3:E9:C5:D5:D4:5F:47:46:0F:D2"]
   }
