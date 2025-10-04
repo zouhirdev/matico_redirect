@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Reset Password</title>
   <style>
+    /* Your CSS styles remain the same */
     body {
       font-family: system-ui, sans-serif;
       display: flex;
@@ -56,24 +57,25 @@
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-    const supabase = createClient("https://supabase.rezemate.com", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc1OTI1Mjk4MCwiZXhwIjo0OTE0OTI2NTgwLCJyb2xlIjoiYW5vbiJ9.2MQamfKYk3O_Q5kDOPWlutMhFLQbE2LYupgxJQDtOCY");
+    // IMPORTANT: Replace with your actual Supabase URL and Anon Key
+    const supabase = createClient("https://your-supabase-url.com", "your-supabase-anon-key");
 
-    // Exchange code for a temporary session
-    async function initSession() {
-      const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
-      if (error) {
-        document.getElementById("msg").textContent = "Invalid or expired reset link.";
-        document.getElementById("reset-form").style.display = "none";
+    // Listen for the PASSWORD_RECOVERY event
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        // This event means the user has a valid session to update their password.
+        // The form is now ready to be used.
+        document.getElementById("msg").textContent = "You can now set a new password.";
       }
-    }
-
-    initSession();
+    });
 
     // Handle form submit
     document.getElementById("reset-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const password = document.getElementById("password").value;
       const msg = document.getElementById("msg");
+      const form = document.getElementById("reset-form");
+      
       msg.textContent = "Updating password…";
 
       const { data, error } = await supabase.auth.updateUser({ password });
@@ -81,11 +83,10 @@
       if (error) {
         msg.textContent = "Error: " + error.message;
       } else {
-        msg.textContent = "✅ Password updated successfully. You can close this page and log in with your new password.";
-        e.target.style.display = "none";
+        msg.textContent = "✅ Password updated successfully. You can now close this page.";
+        form.style.display = "none";
       }
     });
   </script>
 </body>
 </html>
-
