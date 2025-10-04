@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reset Password</title>
+  <style>
+    /* Your CSS styles remain the same */
+    body {
+      font-family: system-ui, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #0D1B2A;
+      color: #eee;
+    }
+    .card {
+      background: #182430;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    h1 { font-size: 1.2rem; margin-bottom: 1rem; }
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      background: #00F5A0;
+      color: #0D1B2A;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:disabled { 
+      opacity: 0.5; 
+      cursor: not-allowed;
+    }
+    .msg { margin-top: 1rem; font-size: 0.9rem; min-height: 1.2rem;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Reset your password</h1>
+    <form id="reset-form" style="display: none;">
+      <input type="password" id="password" placeholder="Enter your new password" required />
+      <button type="submit" id="submit-button">Update Password</button>
+    </form>
+    <p class="msg" id="msg">Verifying your link, please wait...</p>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js";
+
+    // IMPORTANT: Replace with your actual Supabase URL and Anon Key
+    const supabase = createClient("YOUR_SUPABASE_URL", "YOUR_SUPABASE_ANON_KEY");
+
+    const resetForm = document.getElementById("reset-form");
+    const msg = document.getElementById("msg");
+    const submitButton = document.getElementById("submit-button");
+
+    // Disable the button by default
+    submitButton.disabled = true;
+
+    // Supabase automatically handles the URL fragment.
+    // We listen for the event that tells us a session is ready.
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        // This event confirms the user has a valid temporary session.
+        msg.textContent = "Please enter and confirm your new password.";
+        resetForm.style.display = 'block'; // Show the form
+        submitButton.disabled = false; // Enable the submit button
+      }
+    });
+
+    // Add a small timeout to handle cases where the link is invalid
+    setTimeout(() => {
+        // If the form is still hidden after 2 seconds, the link was likely invalid
+        if (resetForm.style.display === 'none') {
+            msg.textContent = "Error: Invalid or expired password reset link.";
+        }
+    }, 2000);
+
+
+    // Handle the form submission
+    resetForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const password = document.getElementById("password").value;
+      
+      // Disable the button to prevent multiple submissions
+      submitButton.disabled = true;
+      msg.textContent = "Updating password...";
+
+      const { data, error } = await supabase.auth.updateUser({ password });
+
+      if (error) {
+        msg.textContent = "Error: " + error.message;
+        submitButton.disabled = false; // Re-enable on error
+      } else {
+        msg.textContent = "✅ Your password has been updated successfully. You can close this page.";
+        resetForm.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
