@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-t" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Portfolio of Badache Zouhir — AI & Flutter Developer. Creative animated single-file portfolio with dual themes." />
   <title>Badache Zouhir — AI & Flutter Developer</title>
@@ -48,12 +48,12 @@
     body{transition: background 620ms ease, color 420ms ease}
 
     /* ---------- PAGE LAYOUT ---------- */
-    .site{height:100vh;overflow-y:auto;scroll-snap-type:y mandatory;background:var(--bg);color:var(--text);}
-    .section{height:100vh;display:flex;align-items:center;justify-content:center;padding:48px;scroll-snap-align:start}
+    .site{height:100vh;overflow-y:auto;background:var(--bg);color:var(--text);}
+    .section{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 48px;scroll-snap-align:start}
     .container{max-width:var(--maxw);width:100%;padding:0 20px;margin:0 auto}
 
     /* ---------- NAVBAR ---------- */
-    .navbar{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:90;width:calc(100% - 40px);max-width:var(--maxw);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,0.04);backdrop-filter:blur(6px)}
+    .navbar{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:999;width:calc(100% - 40px);max-width:var(--maxw);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,0.04);backdrop-filter:blur(6px)}
     .brand{display:flex;gap:12px;align-items:center}
     .logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:grid;place-items:center;font-weight:800;color:white;font-family:monospace}
     .meta .name{font-weight:800}
@@ -61,7 +61,10 @@
 
     .nav{display:flex;gap:8px;align-items:center}
     .nav button{background:transparent;border:none;padding:8px 12px;border-radius:10px;color:var(--text);font-weight:700;cursor:pointer}
-    .nav button:focus{outline:2px solid rgba(0,0,0,0.12)}
+    .nav button:focus{outline:2px solid var(--accent2)}
+
+    .hamburger { display: none; }
+    .bar { display: block; width: 25px; height: 3px; margin: 5px auto; -webkit-transition: all 0.3s ease-in-out; transition: all 0.3s ease-in-out; background-color: var(--text); }
 
     /* toggle (sun/moon) */
     .toggle-wrap{display:flex;align-items:center;gap:8px}
@@ -72,6 +75,7 @@
 
     /* ---------- HERO ---------- */
     .hero-inner{display:grid;grid-template-columns:1fr 420px;gap:42px;align-items:center}
+    .hero-right{display:flex;flex-direction:column;align-items:center;gap:8px}
     .kicker{display:inline-block;padding:6px 12px;border-radius:999px;background:var(--glass);color:var(--muted);font-weight:800;margin-bottom:16px}
     h1{font-size:44px;margin:0}
     .name-glow{background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 24px 60px rgba(124,92,255,0.06)}
@@ -92,7 +96,7 @@
 
     /* avatar */
     .avatar-frame{width:260px;height:260px;border-radius:22px;background:var(--panel);display:grid;place-items:center;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow)}
-    .avatar{width:200px;height:200px;border-radius:16px;background:linear-gradient(135deg,var(--accent2),var(--accent1));display:grid;place-items:center;color:white;font-weight:900;font-size:48px}
+    .avatar{width:200px;height:200px;border-radius:16px;background:linear-gradient(135deg,var(--accent2),var(--accent1));display:block;place-items:center;color:white;font-weight:900;font-size:48px;object-fit: cover; object-position: center;}
 
     /* about */
     .about-grid{display:grid;grid-template-columns:1fr 360px;gap:28px}
@@ -127,13 +131,70 @@
     /* footer */
     footer{position:fixed;left:0;right:0;bottom:8px;text-align:center;color:var(--muted);pointer-events:none}
 
+    /* General Link Style */
+    .link-styled {
+      color: var(--accent1);
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+    .link-styled:hover, .link-styled:focus {
+      text-decoration: underline;
+      color: var(--accent2);
+    }
+
     /* responsive */
     @media (max-width:980px){
-      .hero-inner{grid-template-columns:1fr}
+      .nav {
+        position: fixed;
+        left: -100%;
+        top: 5rem;
+        flex-direction: column;
+        background-color: var(--card);
+        width: 100%;
+        border-radius: 10px;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: var(--shadow);
+      }
+
+      .nav.active {
+        left: 0;
+      }
+
+      .nav-btn {
+        margin: 1.5rem 0;
+      }
+
+      .hamburger {
+        display: block;
+        cursor: pointer;
+      }
+
+      .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+
+      .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+
+      .section { padding: 80px 24px; }
+      .hero-inner{grid-template-columns:1fr; text-align: center;}
+      .hero-left { order: 2; }
+      .hero-right { order: 1; margin-bottom: 2rem; }
+      .cta { justify-content: center;}
       .about-grid{grid-template-columns:1fr}
-      .avatar-frame{width:200px;height:200px}
+      .avatar-frame{width:200px;height:200px; margin: 0 auto;}
       .avatar{width:160px;height:160px;font-size:36px}
       .navbar{left:12px;right:12px;transform:none}
+      h1 { font-size: 36px; }
+      .lead { font-size: 14px; margin-left: auto; margin-right: auto; }
+      .projects-grid { grid-template-columns: 1fr; }
     }
 
     /* accessibility focus */
@@ -144,7 +205,7 @@
 
   <div class="navbar" role="navigation" aria-label="Main navigation">
     <div class="brand">
-      <div class="logo" aria-hidden="true">BZ</div>
+      <img src="https://raw.githubusercontent.com/zouhirdev/matico_redirect/main/assets/avatar.png" alt="Badache Zouhir" class="logo" />
       <div class="meta"><div class="name">Badache Zouhir</div><div class="role">AI & Flutter Developer</div></div>
     </div>
 
@@ -153,6 +214,12 @@
       <button class="nav-btn" data-target="about" role="menuitem">About</button>
       <button class="nav-btn" data-target="projects" role="menuitem">Projects</button>
       <button class="nav-btn" data-target="contact" role="menuitem">Contact</button>
+    </div>
+
+    <div class="hamburger">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
     </div>
 
     <div class="toggle-wrap">
@@ -224,7 +291,7 @@
     <!-- PROJECTS -->
     <section id="projects" class="section" aria-label="Projects">
       <div class="container">
-        <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;justify-content:space-between;align-items:center; flex-wrap: wrap; gap: 1rem;">
           <h2>Projects</h2>
           <div style="color:var(--muted)">Most projects are private or in-progress</div>
         </div>
@@ -242,11 +309,11 @@
 
     <!-- CONTACT -->
     <section id="contact" class="section" aria-label="Contact">
-      <div class="container contact-box">
+      <div class="container contact-box" style="text-align: center;">
         <h2>Let's connect</h2>
         <p style="color:var(--muted)">Interested in demos, collaboration, or seeing private work? Reach out and I’ll share playtests or private repos on request.</p>
         <a class="mail-btn" href="mailto:zouhirdev@gmail.com">Email — zouhirdev@gmail.com</a>
-        <p style="color:var(--muted);margin-top:10px">GitHub: <a href="https://github.com/zouhirdev" target="_blank" rel="noopener">github.com/zouhirdev</a></p>
+        <p style="color:var(--muted);margin-top:10px">GitHub: <a href="https://github.com/zouhirdev" target="_blank" rel="noopener" class="link-styled">github.com/zouhirdev</a></p>
       </div>
     </section>
 
@@ -257,6 +324,20 @@
   <script>
     // set year
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    const hamburger = document.querySelector(".hamburger");
+    const navMenu = document.querySelector(".nav");
+
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navMenu.classList.toggle("active");
+    })
+
+    document.querySelectorAll(".nav-btn").forEach(n => n.addEventListener("click", () => {
+      hamburger.classList.remove("active");
+      navMenu.classList.remove("active");
+    }));
+
 
     // NAV: scroll to sections
     document.querySelectorAll('.nav button, .nav-btn').forEach(btn=>{
@@ -304,5 +385,4 @@
     document.getElementById('site').setAttribute('tabindex','0');
   </script>
 </body>
-
 </html>
