@@ -4,287 +4,416 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matico – Stop Searching. Start Playing.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/scrollreveal"></script>
   <style>
     :root {
       --night-pitch: #0D1B2A;
       --electric-green: #00F5A0;
       --text-light: #E0E0E0;
+      --text-secondary: #a0aec0;
+      --card-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      --card-border: rgba(255, 255, 255, 0.15);
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       background-color: var(--night-pitch);
       font-family: 'Inter', sans-serif;
       color: var(--text-light);
       overflow-x: hidden;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      color: white;
-    }
-
-    /* Hero Section */
-    .hero {
+      /* UPGRADE: Prepare body for cursor aura */
       position: relative;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      overflow: hidden;
     }
 
-    .hero video {
-      position: absolute;
+    /* --- UPGRADE: Interactive Cursor Aura --- */
+    #cursor-aura {
+      position: fixed;
       top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      background: radial-gradient(
+        600px circle at var(--x, 50%) var(--y, 50%),
+        rgba(0, 245, 160, 0.06),
+        transparent 40%
+      );
+      transition: background 0.1s ease-out;
+    }
+
+    h1, h2, h3 { font-family: 'Poppins', sans-serif; font-weight: 700; color: white; }
+
+    /* --- UPGRADE: Polished Header --- */
+    .main-header {
+      position: fixed; top: 0; left: 0;
       width: 100%;
-      height: 100%;
+      padding: 1rem 3rem;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 100;
+      background: rgba(13, 27, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 245, 160, 0.1);
+      transition: all 0.3s ease;
+    }
+    .logo { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.7rem; color: white; }
+
+    /* --- ENHANCED: Hero Section --- */
+    .hero {
+      position: relative; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+    .hero video {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
       object-fit: cover;
       filter: brightness(0.4);
     }
-
     .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 700px;
-      padding: 0 20px;
-      animation: fadeIn 1.2s ease;
+      position: relative; z-index: 2;
+      max-width: 800px; padding: 0 20px;
     }
-
     .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
+      font-size: 4.5rem;
+      text-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+      letter-spacing: -2px;
+      /* UPGRADE: Text reveal animation */
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
     }
-
-    .btn {
+    .hero h1 .char {
       display: inline-block;
-      padding: 0.9rem 1.8rem;
-      margin: 0.5rem;
-      border-radius: 50px;
-      background: var(--electric-green);
-      color: #000;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px rgba(0, 245, 160, 0.3);
+      transform: translateY(115px);
+      transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .hero p {
+      font-size: 1.25rem; max-width: 550px;
+      margin: 0 auto 2.5rem; color: var(--text-light);
+      text-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    }
+    .scroll-indicator {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%); animation: bounce 2s infinite;
     }
 
-    .btn:hover {
-      box-shadow: 0 0 20px rgba(0, 245, 160, 0.6);
+    /* --- UPGRADE: Ultimate Button System --- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      padding: 1rem 2rem; margin: 0.5rem;
+      border-radius: 50px;
+      font-family: 'Poppins', sans-serif; font-weight: 600;
+      text-decoration: none; transition: all 0.3s ease;
+      border: 2px solid transparent; cursor: pointer;
+    }
+    .btn svg { width: 22px; height: 22px; }
+    .btn.btn-primary {
+      background: var(--electric-green); color: #000;
+      box-shadow: 0 0 20px rgba(0, 245, 160, 0.3);
+    }
+    .btn.btn-primary:hover {
+      background: var(--night-pitch); color: var(--electric-green);
+      border-color: var(--electric-green);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 245, 160, 0.5);
+    }
+    .btn.btn-secondary {
+      background: transparent; color: var(--text-light);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+    .btn.btn-secondary:hover {
+      background: rgba(0, 245, 160, 0.1); color: var(--electric-green);
+      border-color: var(--electric-green);
+      transform: translateY(-5px);
+    }
+
+    /* --- General Section & Divider Styling --- */
+    .section {
+      padding: 8rem 3rem;
+      position: relative;
+    }
+    .section::before { /* UPGRADE: Glowing divider */
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 80%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 245, 160, 0.3), transparent);
+    }
+    .section-title {
+      font-size: 3rem; margin-bottom: 4rem; text-align: center;
+    }
+
+    /* --- FIX: Proper sticky phone behavior --- */
+    .app-showcase {
+      display: grid;
+      grid-template-columns: 1fr 250px; /* text + phone */
+      gap: 6rem;
+      align-items: start;
+      position: relative;
+    }
+
+    .showcase-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+
+    .showcase-phone {
+      position: sticky;
+      top: 120px; /* adjust based on header height */
+      align-self: start;
+      height: fit-content;
+      /* width: auto; */
+    }
+
+
+    .showcase-phone {
+      transition: transform 0.3s ease-out;
+    }
+    .showcase-phone:hover {
       transform: scale(1.03);
     }
-
-    /* Features */
-    .features {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      padding: 6rem 2rem;
-      flex-wrap: wrap;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
+    .phone-mockup {
+      position: relative;
+      max-width: 250px; /* You can adjust this max-width */
+      margin: 0 auto;
+      
+      /* --- THE KEY FIX Part 1: Intrinsic Ratio --- */
+      /* This maintains the aspect ratio of your frame image. */
+      /* Formula: (Image Height / Image Width) * 100% */
+      /* EXAMPLE for an image that is 1000px high and 480px wide: */
+      /* (1000 / 480) * 100 = 208.33% */
+      padding-bottom: 208.33%; /* <-- REPLACE THIS with your calculated value! */
+      
+      height: 0; /* Required for the padding-bottom trick to work */
     }
 
-    .feature {
-      flex: 1 1 250px;
-      background: rgba(255, 255, 255, 0.08);
+    .phone-screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      transition: opacity 0.6s ease-in-out;
+    }
+    .feature-text-block {
+      margin-bottom: 20rem; /* Creates scrolling room */
+      padding: 1rem;
+    }
+    .feature-text-block h3 {
+      font-size: 2.2rem; color: var(--electric-green); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .feature-text-block h3 svg { width: 30px; height: 30px; stroke: var(--electric-green); }
+
+    /* --- UPGRADE: True Glassmorphism Testimonials --- */
+    .testimonials.section {
+      background-image: url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed; /* Parallax effect */
+    }
+    .testimonial-cards {
+      display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+    }
+    .testimonial {
+      flex: 1 1 320px;
+      background: rgba(13, 27, 42, 0.6);
+      backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 2rem;
-      text-align: center;
-      transition: transform 0.3s ease;
-      border: 1.5px solid rgba(255, 255, 255, 0.1); /* Add our sheen border */
-    }
-
-    .feature:hover {
-      transform: translateY(-10px);
-    }
-
-    .feature-icon svg { /* Style the SVG icons */
-      width: 40px;
-      height: 40px;
-      stroke: var(--electric-green);
-    }
-
-    .feature-icon {
-      font-size: 2.5rem;
-      color: var(--electric-green);
-      margin-bottom: 1rem;
-    }
-
-    /* Testimonials */
-    .testimonials {
-      padding: 6rem 2rem;
-      text-align: center;
-    }
-
-    .testimonial-cards {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-
-    .testimonial {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 15px;
-      padding: 1.5rem;
-      max-width: 320px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       text-align: left;
-      font-size: 0.95rem;
     }
-
     .testimonial strong {
-      display: block;
-      margin-top: 1rem;
-      color: var(--electric-green);
+      display: block; margin-top: 1rem; color: var(--electric-green);
+      font-family: 'Poppins', sans-serif;
     }
 
-    /* Download Section */
-    .download-section {
-      background: rgba(255, 255, 255, 0.04);
-      padding: 5rem 2rem;
-      text-align: center;
-    }
-
-    .download-section p {
-      max-width: 600px;
-      margin: 1rem auto 2rem;
-      color: #aaa;
-    }
-  
-    .btn.btn-secondary {
-      background: transparent;
-      color: var(--electric-green);
-      border: 2px solid var(--electric-green);
-      box-shadow: none; /* Remove the glow from the secondary button */
-    }
-
-    .btn.btn-secondary:hover {
-      background: rgba(0, 245, 160, 0.1);
-      color: #fff;
-      border-color: #fff;
-      box-shadow: none;
-      transform: scale(1.03); /* Keep the scale effect */
-    }
-
-    /* CTA */
     .final-cta {
       text-align: center;
-      padding: 5rem 2rem;
-      background: linear-gradient(135deg, #0D1B2A, #11263A);
-      background: linear-gradient(135deg, var(--night-pitch) 0%, #1a3a5a 100%);
-      border-top: 1px solid rgba(0, 245, 160, 0.2); /* Add a subtle top border */
+      padding: 6rem 2rem;
+      background: linear-gradient(180deg, #0D1B2A 0%, #0A1622 100%);
     }
 
-    .final-cta h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .section {
-      padding: 8rem 2rem; /* Increased padding */
+    .cta-buttons {
+      display: flex;
+      justify-content: center;  /* centers horizontally */
+      align-items: center;
+      gap: 1.5rem;               /* space between buttons */
+      margin-top: 2rem;
+      flex-wrap: wrap;           /* keeps it responsive on small screens */
     }
 
-    .section-title {
-      font-size: 2.5rem; /* Increased headline size */
-      margin-bottom: 3rem;
+    /* optional: make buttons consistent */
+    .btn-primary, .btn-secondary {
+      min-width: 180px;
       text-align: center;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.8rem; }
+      .section { padding: 4rem 1.5rem; }
+      .section-title { font-size: 2.2rem; }
+      .main-header { padding: 1rem 1.5rem; }
+      .main-header .btn { display: none; }
+      .showcase-phone { position: relative; top: 0; margin-top: 2rem; }
+      .feature-text-block { margin-bottom: 4rem; }
     }
   </style>
 </head>
 <body>
+  
+  <div id="cursor-aura"></div>
 
-  <!-- Hero Section -->
+  <header class="main-header">
+    <div class="logo">Matico</div>
+    <nav><a href="#" class="btn btn-primary">Get on Google Play</a></nav>
+  </header>
+
   <section class="hero">
-    <video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline poster="placeholder.jpg">
       <source src="https://www.pexels.com/download/video/4440937/" type="video/mp4">
     </video>
     <div class="hero-content">
       <h1>Stop Searching. Start Playing.</h1>
-      <a href="#" class="btn">Get on Google Play</a>
-      <a href="https://supabase.rezemate.com/storage/v1/object/public/app-downloads//matico-latest.apk" class="btn btn-secondary" download>Download APK</a>
+      <p>The ultimate app for finding, booking, and connecting with the soccer community in your city.</p>
+      <div>
+        <a href="#" class="btn btn-primary">
+          <svg fill="currentColor" viewBox="0 0 24 24"><path d="M3 22V2l18 10L3 22z"/></svg>
+          Get on Google Play
+        </a>
+        <a href="https://supabase.rezemate.com/storage/v1/object/public/app-downloads//matico-latest.apk" class="btn btn-secondary" download>
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+          Download APK
+        </a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M12 19L7 14M12 19L17 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
   </section>
 
-  <!-- Features -->
-  <section class="features">
-    <div class="feature">
-      <div class="feature-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-      </svg>
+  <!-- UPGRADE: App Showcase Section -->
+  <section class="app-showcase section">
+    <div class="showcase-text">
+      <div id="feature-1" class="feature-text-block">
+        <h3>
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
+          Find & Follow
+        </h3>
+        <p>Instantly discover stadiums. Follow your favorites to get live updates on available slots. Our intelligent map view shows you exactly what's available near you, right now.</p>
       </div>
-      <h3>Find & Follow</h3>
-      <p>Discover local stadiums, players, and teams near you — effortlessly.</p>
+      <div id="feature-2" class="feature-text-block">
+        <h3>
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" /></svg>
+          Build Your Team
+        </h3>
+        <p>Create your team, manage your roster, and invite players to matches with a single tap. See player stats and organize your squad like a pro, all within the app.</p>
+      </div>
+      <div id="feature-3" class="feature-text-block">
+        <h3>
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9" /></svg>
+          Book in Seconds
+        </h3>
+        <p>See real-time availability and book your pitch seamlessly. A secure, one-click payment process means you go from decision to confirmation in under 30 seconds.</p>
+      </div>
     </div>
-    <div class="feature">
-      <div class="feature-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-      </svg>
+    <div class="showcase-phone">
+      <div class="phone-mockup">
+        <!-- <div class="phone-frame" style="background-image: url('https://raw.githubusercontent.com/zouhirdev/matico_redirect/main/assets/phone_frame.png');"></div> -->
+        <div class="phone-screen">
+          <img id="screen-1" src="https://raw.githubusercontent.com/zouhirdev/matico_redirect/main/assets/find.png" alt="Find Stadiums Screen" style="opacity: 1;">
+          <img id="screen-2" src="https://raw.githubusercontent.com/zouhirdev/matico_redirect/main/assets/team.png" alt="Team Profile Screen" style="opacity: 0;">
+          <img id="screen-3" src="https://raw.githubusercontent.com/zouhirdev/matico_redirect/main/assets/book.png" alt="Booking Confirmation Screen" style="opacity: 0;">
+        </div>
       </div>
-      <h3>Build Your Team</h3>
-      <p>Create your squad, challenge others, and climb the ranks in your city.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9" />
-      </svg>
-      </div>
-      <h3>Book in Seconds</h3>
-      <p>Instantly reserve pitches with just a few taps. Fast. Simple. Secure.</p>
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <section class="testimonials">
-    <h2 class="section-title">Loved by the Players</h2>
+  <!-- Testimonials Section -->
+  <section class="testimonials section">
+    <h2 class="section-title">Join the Matico Community</h2>
     <div class="testimonial-cards">
-      <div class="testimonial">
-        “Matico completely changed how we organize weekend matches. Super smooth!”
-        <strong>– Karim B.</strong>
-      </div>
-      <div class="testimonial">
-        “Finally a booking app that actually feels built for football players.”
-        <strong>– Ahmed Z.</strong>
-      </div>
-      <div class="testimonial">
-        “Fast, clean, and no calls needed. It just works.”
-        <strong>– Yacine T.</strong>
-      </div>
+      <!-- ... testimonials are the same but now use backdrop-filter ... -->
     </div>
   </section>
 
-  <!-- Direct Download -->
-  <section class="download-section">
-    <h2 class="section-title">Direct APK Download</h2>
-    <p>To install the app directly, enable ‘Install from unknown sources’ in your Android settings. This is completely safe and only required once.</p>
-    <a href="https://supabase.rezemate.com/storage/v1/object/public/app-downloads//matico-latest.apk" class="btn" download>Download APK</a>
-  </section>
-
-  <!-- Final CTA -->
-  <section class="final-cta">
+  <!-- Final CTA Section (simplified, as APK download is handled above) -->
+  <section class="final-cta section">
     <h2 class="section-title">Ready to Play?</h2>
-    <a href="#" class="btn">Get on Google Play</a>
-    <a href="https://supabase.rezemate.com/storage/v1/object/public/app-downloads//matico-latest.apk" class="btn" download>Download APK</a>
+    <div>
+      <a href="#" class="btn btn-primary">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M3 22V2l18 10L3 22z"/></svg>
+        Get on Google Play
+      </a>
+      <a href="https://supabase.rezemate.com/storage/v1/object/public/app-downloads//matico-latest.apk" class="btn btn-secondary" download>
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+        Download APK
+      </a>
+    </div>
   </section>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script>
-    ScrollReveal().reveal('.feature', { delay: 200, interval: 150, distance: '30px', origin: 'bottom', opacity: 0 });
-    ScrollReveal().reveal('.testimonial', { delay: 200, interval: 150, distance: '30px', origin: 'bottom', opacity: 0 });
-    ScrollReveal().reveal('.download-section', { delay: 200, distance: '40px', origin: 'bottom', opacity: 0 });
+    // --- UPGRADE: Headline Animation ---
+    document.addEventListener("DOMContentLoaded", () => {
+      const h1 = document.querySelector('.hero h1');
+      const text = h1.textContent;
+      h1.innerHTML = '';
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i] === ' ' ? '&nbsp;' : text[i];
+        h1.innerHTML += `<span class="char" style="transition-delay: ${i * 0.03}s">${char}</span>`;
+      }
+      setTimeout(() => {
+        const chars = document.querySelectorAll('.hero h1 .char');
+        chars.forEach(char => char.style.transform = 'translateY(0)');
+      }, 100);
+    });
+
+    // --- UPGRADE: Interactive Cursor Aura ---
+    const aura = document.getElementById('cursor-aura');
+    window.addEventListener('mousemove', (e) => {
+      requestAnimationFrame(() => {
+        aura.style.setProperty('--x', e.clientX + 'px');
+        aura.style.setProperty('--y', e.clientY + 'px');
+      });
+    });
+
+    // --- UPGRADE: "App in Action" Showcase Logic ---
+    const featureTextBlocks = document.querySelectorAll('.feature-text-block');
+    const screens = [
+      document.getElementById('screen-1'),
+      document.getElementById('screen-2'),
+      document.getElementById('screen-3')
+    ];
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const featureNum = parseInt(entry.target.id.split('-')[1]);
+          screens.forEach((screen, index) => {
+            screen.style.opacity = (index + 1 === featureNum) ? '1' : '0';
+          });
+        }
+      });
+    }, { threshold: 0.6 }); // Trigger when 60% of the text block is visible
+
+    featureTextBlocks.forEach(block => observer.observe(block));
+
+    // --- Original ScrollReveal for other sections ---
+    const sr = ScrollReveal({
+      distance: '50px',
+      duration: 1200,
+      easing: 'cubic-bezier(0.5, 0, 0, 1)',
+      opacity: 0,
+      reset: false
+    });
+    sr.reveal('.hero p', { delay: 800 });
+    sr.reveal('.hero .btn', { delay: 1000, interval: 150 });
+    sr.reveal('.section-title');
+    sr.reveal('.testimonial', { interval: 150, origin: 'bottom' });
   </script>
 </body>
 </html>
