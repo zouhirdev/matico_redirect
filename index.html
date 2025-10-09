@@ -154,6 +154,7 @@
 
     .showcase-text {
       margin-top: 13rem; /* or use padding-top if preferred */
+      margin-top: 13rem; /* or use padding-top if preferred */
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -209,6 +210,7 @@
 
     /* --- UPGRADE: True Glassmorphism Testimonials --- */
     .testimonials.section {
+      background-image: url('https://images.unsplash.com/photo-1570498839593-e565b39455fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
       background-image: url('https://images.unsplash.com/photo-1570498839593-e565b39455fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
       background-size: cover;
       background-position: center;
@@ -268,6 +270,20 @@
         text-align: center;
         align-items: center;
       }
+      .showcase-phone {
+        display: none !important;
+      }
+
+      .app-showcase {
+        grid-template-columns: 1fr; /* single column layout */
+        gap: 2rem;
+      }
+
+      .showcase-text {
+        margin-top: 1rem; 
+        text-align: center;
+        align-items: center;
+      }
       .hero h1 { font-size: 2.8rem; }
       .section { padding: 4rem 1.5rem; }
       .section-title { font-size: 2.2rem; }
@@ -300,8 +316,10 @@
           Get on Google Play
         </a>
         <button id="downloadApk" class="btn btn-secondary">
+        <button id="downloadApk" class="btn btn-secondary">
           <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
           Download APK
+        </button>
         </button>
       </div>
     </div>
