@@ -153,6 +153,7 @@
     }
 
     .showcase-text {
+      margin-top: 13rem; /* or use padding-top if preferred */
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -208,7 +209,7 @@
 
     /* --- UPGRADE: True Glassmorphism Testimonials --- */
     .testimonials.section {
-      background-image: url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+      background-image: url('https://images.unsplash.com/photo-1570498839593-e565b39455fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
       background-size: cover;
       background-position: center;
       background-attachment: fixed; /* Parallax effect */
@@ -253,6 +254,20 @@
 
 
     @media (max-width: 768px) {
+      .showcase-phone {
+        display: none !important;
+      }
+
+      .app-showcase {
+        grid-template-columns: 1fr; /* single column layout */
+        gap: 2rem;
+      }
+
+      .showcase-text {
+        margin-top: 1rem; 
+        text-align: center;
+        align-items: center;
+      }
       .hero h1 { font-size: 2.8rem; }
       .section { padding: 4rem 1.5rem; }
       .section-title { font-size: 2.2rem; }
@@ -284,10 +299,10 @@
           <svg fill="currentColor" viewBox="0 0 24 24"><path d="M3 22V2l18 10L3 22z"/></svg>
           Get on Google Play
         </a>
-        <a href="https://supabase.rezemate.com/storage/v1/object/public/app-downloads//matico-latest.apk" class="btn btn-secondary" download>
+        <button id="downloadApk" class="btn btn-secondary">
           <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
           Download APK
-        </a>
+        </button>
       </div>
     </div>
     <div class="scroll-indicator">
@@ -348,10 +363,10 @@
         <svg fill="currentColor" viewBox="0 0 24 24"><path d="M3 22V2l18 10L3 22z"/></svg>
         Get on Google Play
       </a>
-      <a href="https://supabase.rezemate.com/storage/v1/object/public/app-downloads//matico-latest.apk" class="btn btn-secondary" download>
+      <button id="downloadApk" class="btn btn-secondary">
         <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
         Download APK
-      </a>
+      </button>
     </div>
   </section>
 
@@ -415,5 +430,13 @@
     sr.reveal('.section-title');
     sr.reveal('.testimonial', { interval: 150, origin: 'bottom' });
   </script>
+  <script>
+    document.getElementById("downloadApk").addEventListener("click", async () => {
+      const res = await fetch("https://supabase.rezemate.com/functions/v1/download_apk");
+      const { url, error } = await res.json();
+      if (error) return alert("Download temporarily unavailable.");
+      window.location.href = url;
+    });
+</script>
 </body>
 </html>
